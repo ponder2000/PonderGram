@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "684484230311",
+    "firebase_url": "https://pondergram-77202.firebaseio.com",
+    "project_id": "pondergram-77202",
+    "storage_bucket": "pondergram-77202.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684484230311:android:c77480b2ddf4f137d56f82",
+        "android_client_info": {
+          "package_name": "com.ponder.pondergram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "684484230311-c69offlgcfpgv9938jlhrl32etl9ms7i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ponder.pondergram",
+            "certificate_hash": "f877eb17070f694a8dc59332bb03d5de94efdc7a"
+          }
+        },
+        {
+          "client_id": "684484230311-6qbct241ejmn1rehalqt56n96ske72u4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwFeNnPZqG08z6xmCv-g6m1Gm2AnD5_wM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "684484230311-6qbct241ejmn1rehalqt56n96ske72u4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
