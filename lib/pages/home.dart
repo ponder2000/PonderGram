@@ -1,7 +1,10 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pondergram/pages/create_account.dart';
+import 'package:pondergram/pages/profile.dart';
+import 'package:pondergram/pages/timeline.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -75,19 +78,22 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: [
-          CreateAccount(),
+          TimeLinePage(),
+          ProfilePage(),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(), // user can not scroll
       ),
       bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
         currentIndex: pageIndex,
         onTap: (val) {
-          pageController.jumpToPage(val);
+          pageController.animateToPage(val,
+              duration: Duration(milliseconds: 300),
+              curve: Curves.easeInToLinear);
         },
-        activeColor: Theme.of(context).primaryColor,
+        activeColor: Theme.of(context).accentColor,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.whatshot),
