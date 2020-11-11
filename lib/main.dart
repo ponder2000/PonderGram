@@ -11,7 +11,7 @@ class PonderGram extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PonderGram',
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: true,
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,

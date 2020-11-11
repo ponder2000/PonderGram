@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pondergram/pages/create_account.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 
@@ -10,21 +12,31 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   bool isAuth = false;
+  PageController pageController;
+  int pageIndex = 0;
 
   @override
   void initState() {
     super.initState();
+    pageController = PageController();
     googleSignIn.onCurrentUserChanged.listen((account) {
       handleSignIn(account);
     }, onError: (err) {
       print("Error signin in : $err");
     });
 
+    // to auto signin if already signedin in last session
     googleSignIn.signInSilently(suppressErrors: false).then((account) {
       handleSignIn(account);
     }).catchError((err) {
       print("Error signin in : $err");
     });
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
   }
 
   handleSignIn(GoogleSignInAccount account) {
@@ -40,13 +52,65 @@ class _HomeState extends State<Home> {
     }
   }
 
+  onPressedLogOut() {
+    googleSignIn.signOut();
+    print("User signed out!");
+    setState(() {
+      isAuth = false;
+    });
+  }
+
   onPressedSignIn() {
     googleSignIn.signIn();
   }
 
+  onPageChanged(int pageInd) {
+    setState(() {
+      this.pageIndex = pageInd;
+    });
+  }
+
   // view when sign in is done
   Widget buildAuthScreen() {
-    return Text("Authenticated");
+    return Scaffold(
+      body: PageView(
+        children: [
+          CreateAccount(),
+        ],
+        controller: pageController,
+        onPageChanged: onPageChanged,
+        physics: NeverScrollableScrollPhysics(), // user can not scroll
+      ),
+      bottomNavigationBar: CupertinoTabBar(
+        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+        currentIndex: pageIndex,
+        onTap: (val) {
+          pageController.jumpToPage(val);
+        },
+        activeColor: Theme.of(context).primaryColor,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.whatshot),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.notifications_active),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.photo_camera,
+              size: 35.5,
+            ),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle),
+          ),
+        ],
+      ),
+    );
+    // return CreateAccount();
   }
 
   // view when sign is not done
@@ -73,6 +137,7 @@ class _HomeState extends State<Home> {
                 'PonderGram',
                 style: TextStyle(
                   fontSize: 60.0,
+                  fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
