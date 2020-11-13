@@ -5,6 +5,7 @@ import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/post.dart';
 import 'package:pondergram/pages/timeline.dart';
 import 'package:pondergram/widgets/loading.dart';
+import 'package:pondergram/widgets/post_tile.dart';
 import 'package:pondergram/widgets/reusable_header.dart';
 import 'edit_profile.dart';
 import 'home.dart';
@@ -18,6 +19,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final String currentUserId = currentUser?.id;
+  bool gridOrientation = true;
   bool isLoading = false;
   int postCount = 0;
   List<Post> posts = [];
@@ -125,7 +127,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            buildCountCoulumn("posts", 0),
+                            buildCountCoulumn("posts", postCount),
                             buildCountCoulumn("followers", 0),
                             buildCountCoulumn("following", 0),
                           ],
@@ -202,8 +204,65 @@ class _ProfilePageState extends State<ProfilePage> {
 
   buildProfilePost() {
     if (isLoading) return circularProgress();
-    return Column(
-      children: posts,
+    List<GridTile> gridTileList = [];
+    posts.forEach((post) {
+      gridTileList.add(GridTile(
+          child: PostTile(
+        post: post,
+      )));
+    });
+    return gridOrientation
+        ? GridView.count(
+            crossAxisCount: 3,
+            childAspectRatio: 1.0,
+            mainAxisSpacing: 1.5,
+            crossAxisSpacing: 1.5,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            children: gridTileList,
+          )
+        : Column(
+            children: posts,
+          );
+  }
+
+  buildToggleOrientation() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          icon: Icon(
+            Icons.grid_on,
+            size: 30.0,
+          ),
+          color: gridOrientation ? Theme.of(context).primaryColor : Colors.grey,
+          onPressed: gridOrientation
+              ? () {}
+              : () {
+                  setState(() {
+                    gridOrientation = true;
+                  });
+                },
+        ),
+        Divider(
+          height: 2.0,
+          color: Colors.black,
+        ),
+        IconButton(
+          icon: Icon(
+            Icons.list,
+            size: 30.0,
+          ),
+          color: gridOrientation ? Colors.grey : Theme.of(context).primaryColor,
+          onPressed: gridOrientation
+              ? () {
+                  setState(() {
+                    gridOrientation = false;
+                  });
+                }
+              : () {},
+        ),
+      ],
     );
   }
 
@@ -214,9 +273,9 @@ class _ProfilePageState extends State<ProfilePage> {
       body: ListView(
         children: [
           buildProfileHeader(),
-          Divider(
-            height: 0.0,
-          ),
+          Divider(height: 2.0),
+          buildToggleOrientation(),
+          Divider(height: 2.0),
           buildProfilePost(),
         ],
       ),

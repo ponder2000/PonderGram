@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/timeline.dart';
+import 'package:pondergram/widgets/custom_image.dart';
 import 'package:pondergram/widgets/loading.dart';
 
 class Post extends StatefulWidget {
@@ -108,7 +109,7 @@ class _PostState extends State<Post> {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Image.network(mediaUrl),
+          customCachedNetworkImage(mediaUrl),
         ],
       ),
     );
