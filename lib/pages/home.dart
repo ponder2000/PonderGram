@@ -1,12 +1,22 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/create_account.dart';
 import 'package:pondergram/pages/profile.dart';
+import 'package:pondergram/pages/search.dart';
 import 'package:pondergram/pages/timeline.dart';
+import 'package:pondergram/pages/upload.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final usersRef = FirebaseFirestore.instance.collection('users');
+final postsRef = FirebaseFirestore.instance.collection('posts');
+final Reference storageRef = FirebaseStorage.instance.ref();
+final DateTime timestamp = DateTime.now();
+
+User currentUser;
 
 class Home extends StatefulWidget {
   @override
@@ -45,6 +55,7 @@ class _HomeState extends State<Home> {
   handleSignIn(GoogleSignInAccount account) {
     if (account != null) {
       print('Signed in user : $account');
+      createUserInDB();
       setState(() {
         isAuth = true;
       });
@@ -55,9 +66,35 @@ class _HomeState extends State<Home> {
     }
   }
 
+  createUserInDB() async {
+    //check if user exist already
+    final GoogleSignInAccount user = googleSignIn.currentUser;
+    DocumentSnapshot doc = await usersRef.doc(user.id).get();
+    //if the users doesn't exist then take them to create account page and set up their profile
+    if (!doc.exists) {
+      final username = await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => CreateAccount()));
+      //get username from create_account and make user in users collection
+      usersRef.doc(user.id).set({
+        "id": user.id,
+        "username": username,
+        "photoUrl": user.photoUrl,
+        "email": user.email,
+        "displayName": user.displayName,
+        "bio": "",
+        "timestamp": timestamp,
+      });
+
+      doc = await userRef.doc(user.id).get();
+    }
+
+    currentUser = User.fromDocument(doc);
+    print(currentUser.username);
+  }
+
   onPressedLogOut() {
     googleSignIn.signOut();
-    print("User signed out!");
+    print("---> User signed out!");
     setState(() {
       isAuth = false;
     });
@@ -78,8 +115,14 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: [
+          RaisedButton(
+            onPressed: onPressedLogOut,
+            child: Text("LogOut"),
+          ),
           TimeLinePage(),
-          ProfilePage(),
+          UploadPage(currentUser: currentUser),
+          SearchPage(),
+          ProfilePage(profileId: currentUser?.id),
         ],
         controller: pageController,
         onPageChanged: onPageChanged,
@@ -90,8 +133,7 @@ class _HomeState extends State<Home> {
         currentIndex: pageIndex,
         onTap: (val) {
           pageController.animateToPage(val,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeInToLinear);
+              duration: Duration(milliseconds: 100), curve: Curves.easeIn);
         },
         activeColor: Theme.of(context).accentColor,
         items: [
@@ -103,7 +145,7 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.photo_camera,
+              Icons.add_a_photo,
               size: 35.5,
             ),
           ),

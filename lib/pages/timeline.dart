@@ -11,26 +11,30 @@ class TimeLinePage extends StatefulWidget {
 }
 
 class _TimeLinePageState extends State<TimeLinePage> {
-  getUserById() {
-    final String id = "lZAPudWz7lJNzXvNIEIB";
-    userRef.doc(id).get().then((value) {
-      print("%%%%%%%%%%%%%%%%%%%");
-      print(value.data());
-      print(value.toString());
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    getUserById();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: header(context, isAppTitle: true),
-      body: linearProgress(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: userRef.snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return circularProgress();
+          }
+          final children =
+              snapshot.data.docs.map((d) => Text(d['username'])).toList();
+          return Container(
+            child: ListView(
+              children: children,
+            ),
+          );
+        },
+      ),
     );
   }
 }
