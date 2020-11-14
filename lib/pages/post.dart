@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
+import 'package:pondergram/pages/profile.dart';
 import 'package:pondergram/pages/timeline.dart';
 import 'package:pondergram/widgets/custom_image.dart';
 import 'package:pondergram/widgets/loading.dart';
@@ -154,6 +155,18 @@ class _PostState extends State<Post> {
     }
   }
 
+  //show a full profile page
+  showProfile(BuildContext context, {String profileId}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfilePage(
+          profileId: profileId,
+        ),
+      ),
+    );
+  }
+
   buildPostHeader() {
     return FutureBuilder(
         future: userRef.doc(ownerId).get(),
@@ -173,7 +186,7 @@ class _PostState extends State<Post> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onTap: () => print("----> show profile"),
+              onTap: () => showProfile(context, profileId: user.id),
             ),
             subtitle: Text(location),
             trailing: IconButton(

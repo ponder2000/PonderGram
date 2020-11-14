@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
+import 'package:pondergram/pages/profile.dart';
 import 'package:pondergram/widgets/loading.dart';
 
 class SearchPage extends StatefulWidget {
@@ -101,6 +102,19 @@ class _SearchPageState extends State<SearchPage> {
 class UserResult extends StatelessWidget {
   final User user;
   UserResult(this.user);
+
+  //show a full profile page
+  showProfile(BuildContext context, {String profileId}) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ProfilePage(
+          profileId: profileId,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -108,14 +122,9 @@ class UserResult extends StatelessWidget {
       child: Column(
         children: [
           GestureDetector(
-            onTap: () => print('Naviagte to Profile page'),
+            onTap: () => showProfile(context, profileId: user.id),
             child: ListTile(
               leading: CircleAvatar(
-                // child: CachedNetworkImage(
-                //   imageUrl: user.photoUrl,
-                //   placeholder: (context, url) => CircularProgressIndicator(),
-                //   errorWidget: (context, url, error) => Icon(Icons.error),
-                // ),
                 backgroundColor: Colors.grey,
                 backgroundImage: CachedNetworkImageProvider(user.photoUrl),
               ),

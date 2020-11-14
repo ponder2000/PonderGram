@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/post_screen.dart';
+import 'package:pondergram/pages/profile.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class ActivityFeedItem extends StatelessWidget {
@@ -85,6 +86,16 @@ class ActivityFeedItem extends StatelessWidget {
     );
   }
 
+  //show a full profile page
+  showProfile(BuildContext context, {String profileId}) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ProfilePage(
+                  profileId: profileId,
+                )));
+  }
+
   @override
   Widget build(BuildContext context) {
     configureMediaPreview(context);
@@ -94,7 +105,7 @@ class ActivityFeedItem extends StatelessWidget {
         color: Colors.white54,
         child: ListTile(
           title: GestureDetector(
-            onTap: () => print("--> Show user"),
+            onTap: () => showProfile(context, profileId: userId),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(

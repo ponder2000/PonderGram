@@ -96,6 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
       );
     } else {
       // else follow or unfollow user
+      return Text("");
     }
   }
 
