@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pondergram/models/user.dart';
+import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/timeline.dart';
 import 'package:pondergram/widgets/custom_image.dart';
 import 'package:pondergram/widgets/loading.dart';
@@ -47,6 +51,9 @@ class _PostState extends State<Post> {
   final String postId, ownerId, username, location, caption, mediaUrl;
   Map likes;
   int likeCount = 0;
+  final String currentUserId = currentUser?.id;
+  bool isLike;
+  bool showHeart = false;
 
   _PostState(
       {this.postId,
@@ -61,6 +68,7 @@ class _PostState extends State<Post> {
   void initState() {
     super.initState();
     setState(() {
+      isLike = likes[currentUserId] == null ? false : true;
       likeCount = getLikeCount(likes);
     });
   }
@@ -72,6 +80,40 @@ class _PostState extends State<Post> {
       if (val) _count++;
     });
     return _count;
+  }
+
+  hdnleLikePost() {
+    bool _isLiked = likes[currentUserId] == true;
+    if (_isLiked) {
+      // if users has previously liked the post and now unliking it
+      postsRef
+          .doc(ownerId)
+          .collection('userPosts')
+          .doc(postId)
+          .update({'likes.$currentUserId': false});
+      setState(() {
+        likeCount--;
+        isLike = false;
+        likes[currentUserId] = false;
+      });
+    } else if (!_isLiked) {
+      postsRef
+          .doc(ownerId)
+          .collection('userPosts')
+          .doc(postId)
+          .update({'likes.$currentUserId': true});
+      setState(() {
+        likeCount++;
+        isLike = true;
+        likes[currentUserId] = true;
+        showHeart = true;
+      });
+      Timer(Duration(milliseconds: 500), () {
+        setState(() {
+          showHeart = false;
+        });
+      });
+    }
   }
 
   buildPostHeader() {
@@ -105,11 +147,28 @@ class _PostState extends State<Post> {
 
   buildPostImage() {
     return GestureDetector(
-      onDoubleTap: () => print("---> photo liked"),
+      onDoubleTap: () => hdnleLikePost(),
       child: Stack(
         alignment: Alignment.center,
         children: [
           customCachedNetworkImage(mediaUrl),
+          // double tap visual feature
+          showHeart
+              ? Animator(
+                  duration: Duration(milliseconds: 500),
+                  tween: Tween(begin: 0.8, end: 1.4),
+                  curve: Curves.bounceOut,
+                  cycles: 0,
+                  builder: (context, anim, child) => Transform.scale(
+                    scale: anim.value,
+                    child: Icon(
+                      Icons.favorite,
+                      size: 80.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              : Text(''),
         ],
       ),
     );
@@ -123,9 +182,9 @@ class _PostState extends State<Post> {
           children: [
             Padding(padding: EdgeInsets.only(top: 40.0, left: 20.0)),
             GestureDetector(
-              onTap: () => print("--> Liked"),
+              onTap: () => hdnleLikePost(),
               child: Icon(
-                Icons.favorite_border,
+                isLike ? Icons.favorite : Icons.favorite_border,
                 size: 28.0,
                 color: Colors.red,
               ),
