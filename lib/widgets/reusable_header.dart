@@ -5,6 +5,7 @@ AppBar header(BuildContext context, {bool isAppTitle = false, String title}) {
     title: Text(
       isAppTitle ? "PonderGram" : title,
       style: TextStyle(fontSize: isAppTitle ? 50.0 : 20),
+      overflow: TextOverflow.ellipsis,
     ),
     centerTitle: true,
     backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
