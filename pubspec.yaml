@@ -22,6 +22,7 @@ dependencies:
   firebase_storage: ^5.0.1
   uuid: ^2.2.2
   animator: ^2.0.1
+  timeago: ^2.0.28
 
 dev_dependencies:
   flutter_test:

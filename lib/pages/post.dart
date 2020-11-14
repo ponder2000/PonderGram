@@ -10,6 +10,8 @@ import 'package:pondergram/pages/timeline.dart';
 import 'package:pondergram/widgets/custom_image.dart';
 import 'package:pondergram/widgets/loading.dart';
 
+import 'comments.dart';
+
 class Post extends StatefulWidget {
   final String postId, ownerId, username, location, caption, mediaUrl;
   final dynamic likes;
@@ -191,11 +193,16 @@ class _PostState extends State<Post> {
             ),
             Padding(padding: EdgeInsets.only(top: 40.0, right: 20.0)),
             GestureDetector(
-              onTap: () => print("--> comment"),
+              onTap: () => showComments(
+                context,
+                mediaUrl: mediaUrl,
+                postId: postId,
+                ownerId: ownerId,
+              ),
               child: Icon(
                 Icons.comment,
                 size: 28.0,
-                color: Colors.black54,
+                color: Colors.black,
               ),
             ),
           ],
@@ -246,4 +253,15 @@ class _PostState extends State<Post> {
       ],
     );
   }
+}
+
+showComments(BuildContext context,
+    {String postId, String ownerId, String mediaUrl}) {
+  Navigator.push(context, MaterialPageRoute(builder: (context) {
+    return Comments(
+      postId: postId,
+      postMediaUrl: mediaUrl,
+      postOwnerId: ownerId,
+    );
+  }));
 }

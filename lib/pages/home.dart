@@ -13,6 +13,7 @@ import 'package:pondergram/pages/upload.dart';
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersRef = FirebaseFirestore.instance.collection('users');
 final postsRef = FirebaseFirestore.instance.collection('posts');
+final commentsRef = FirebaseFirestore.instance.collection('comments');
 final Reference storageRef = FirebaseStorage.instance.ref();
 final DateTime timestamp = DateTime.now();
 

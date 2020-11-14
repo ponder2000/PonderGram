@@ -1,0 +1,87 @@
+import 'package:flutter/material.dart';
+import 'package:pondergram/models/comments.dart';
+import 'package:pondergram/widgets/loading.dart';
+import 'package:pondergram/widgets/reusable_header.dart';
+import 'package:pondergram/pages/home.dart';
+
+class Comments extends StatefulWidget {
+  final String postId, postOwnerId, postMediaUrl;
+  Comments({this.postId, this.postMediaUrl, this.postOwnerId});
+
+  @override
+  _CommentsState createState() => _CommentsState(
+        postId: postId,
+        postMediaUrl: postMediaUrl,
+        postOwnerId: postOwnerId,
+      );
+}
+
+class _CommentsState extends State<Comments> {
+  final String postId, postOwnerId, postMediaUrl;
+  _CommentsState({this.postId, this.postMediaUrl, this.postOwnerId});
+
+  TextEditingController commentController = TextEditingController();
+  bool canPost = false;
+
+  addComment() {
+    commentsRef.doc(postId).collection('postComment').add({
+      'username': currentUser.username,
+      'comment': commentController.text,
+      'timestamp': DateTime.now(),
+      'avatarUrl': currentUser.photoUrl,
+      'userId': currentUser.id,
+    });
+    commentController.clear();
+  }
+
+  buildComments() {
+    return StreamBuilder(
+      stream: commentsRef
+          .doc(postId)
+          .collection('postComment')
+          .orderBy('timestamp', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return circularProgress();
+        List<Comment> comments = [];
+        snapshot.data.docs.forEach((doc) {
+          comments.add(Comment.fromDocument(doc));
+        });
+        return ListView(
+          children: comments,
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: header(context, isAppTitle: false, title: "Comments"),
+      body: Column(
+        children: [
+          Expanded(child: buildComments()),
+          Divider(),
+          ListTile(
+            title: TextFormField(
+              onChanged: (val) {
+                setState(() {
+                  canPost = val.trim().isEmpty;
+                });
+              },
+              controller: commentController,
+              decoration: InputDecoration(
+                labelText: "write a comment",
+              ),
+            ),
+            trailing: OutlineButton(
+              onPressed: canPost ? () {} : () => addComment(),
+              borderSide: BorderSide.none,
+              child: Text("Post"),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
