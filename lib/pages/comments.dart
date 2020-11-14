@@ -23,6 +23,21 @@ class _CommentsState extends State<Comments> {
   TextEditingController commentController = TextEditingController();
   bool canPost = false;
 
+  addCommentToActivityFeed() {
+    bool _isPostOwner = currentUser.id == postOwnerId;
+    if (_isPostOwner) return;
+    activityFeedRef.doc(postOwnerId).collection('feedItems').add({
+      'type': 'comment',
+      'commentData': commentController.text.trim(),
+      'timestamp': DateTime.now(),
+      'postId': postId,
+      'userId': currentUser.id,
+      'username': currentUser.username,
+      'userProfileImg': currentUser.photoUrl,
+      'mediaUrl': postMediaUrl,
+    });
+  }
+
   addComment() {
     commentsRef.doc(postId).collection('postComment').add({
       'username': currentUser.username,
@@ -31,6 +46,7 @@ class _CommentsState extends State<Comments> {
       'avatarUrl': currentUser.photoUrl,
       'userId': currentUser.id,
     });
+    addCommentToActivityFeed();
     commentController.clear();
   }
 

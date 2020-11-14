@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:pondergram/models/user.dart';
+import 'package:pondergram/pages/activity_feed.dart';
 import 'package:pondergram/pages/create_account.dart';
 import 'package:pondergram/pages/profile.dart';
 import 'package:pondergram/pages/search.dart';
@@ -14,6 +15,7 @@ final GoogleSignIn googleSignIn = GoogleSignIn();
 final usersRef = FirebaseFirestore.instance.collection('users');
 final postsRef = FirebaseFirestore.instance.collection('posts');
 final commentsRef = FirebaseFirestore.instance.collection('comments');
+final activityFeedRef = FirebaseFirestore.instance.collection('feeds');
 final Reference storageRef = FirebaseStorage.instance.ref();
 final DateTime timestamp = DateTime.now();
 
@@ -116,11 +118,12 @@ class _HomeState extends State<Home> {
     return Scaffold(
       body: PageView(
         children: [
-          RaisedButton(
-            onPressed: onPressedLogOut,
-            child: Text("LogOut"),
-          ),
+          // RaisedButton(
+          //   onPressed: onPressedLogOut,
+          //   child: Text("LogOut"),
+          // ),
           TimeLinePage(),
+          ActivityFeedPage(),
           UploadPage(currentUser: currentUser),
           SearchPage(),
           ProfilePage(profileId: currentUser?.id),

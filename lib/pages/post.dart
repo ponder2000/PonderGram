@@ -84,6 +84,38 @@ class _PostState extends State<Post> {
     return _count;
   }
 
+  // will add likes to activity feed
+  addLikeToActivityFeed() {
+    // if liked by postOwner user then do nothing
+    bool _isPostOwner = currentUserId == ownerId;
+    if (_isPostOwner) return;
+    activityFeedRef.doc(ownerId).collection('feedItems').doc(postId).set({
+      'type': 'like',
+      'username': currentUser.username,
+      'userId': currentUser.id,
+      'postId': postId,
+      'userProfileImg': currentUser.photoUrl,
+      'mediaUrl': mediaUrl,
+      'timestamp': DateTime.now(),
+    });
+  }
+
+  // will remove if they dislike from activity feed
+  removeLikeToActivityFeed() {
+    bool _isPostOwner = currentUserId == ownerId;
+    if (_isPostOwner) return;
+    activityFeedRef
+        .doc(ownerId)
+        .collection('feedItems')
+        .doc(postId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+  }
+
   hdnleLikePost() {
     bool _isLiked = likes[currentUserId] == true;
     if (_isLiked) {
@@ -93,6 +125,8 @@ class _PostState extends State<Post> {
           .collection('userPosts')
           .doc(postId)
           .update({'likes.$currentUserId': false});
+
+      removeLikeToActivityFeed();
       setState(() {
         likeCount--;
         isLike = false;
@@ -104,6 +138,8 @@ class _PostState extends State<Post> {
           .collection('userPosts')
           .doc(postId)
           .update({'likes.$currentUserId': true});
+
+      addLikeToActivityFeed();
       setState(() {
         likeCount++;
         isLike = true;
