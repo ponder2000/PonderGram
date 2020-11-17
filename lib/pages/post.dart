@@ -28,13 +28,13 @@ class Post extends StatefulWidget {
 
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
-      postId: doc["postId"],
-      caption: doc['caption'],
-      likes: doc['likes'],
-      location: doc['location'],
-      mediaUrl: doc['mediaUrl'],
-      ownerId: doc['ownerId'],
-      username: doc['username'],
+      postId: doc.data()["postId"],
+      caption: doc.data()['caption'],
+      likes: doc.data()['likes'],
+      location: doc.data()['location'],
+      mediaUrl: doc.data()['mediaUrl'],
+      ownerId: doc.data()['ownerId'],
+      username: doc.data()['username'],
     );
   }
 

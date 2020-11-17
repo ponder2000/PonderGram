@@ -30,7 +30,7 @@ class _CommentsState extends State<Comments> {
       'type': 'comment',
       'commentData': commentController.text.trim(),
       'timestamp': DateTime.now(),
-      'postId': postId,
+      'postId': widget.postId,
       'userId': currentUser.id,
       'username': currentUser.username,
       'userProfileImg': currentUser.photoUrl,
@@ -39,6 +39,7 @@ class _CommentsState extends State<Comments> {
   }
 
   addComment() {
+    if (commentController.text.trim().isEmpty) return;
     commentsRef.doc(postId).collection('postComment').add({
       'username': currentUser.username,
       'comment': commentController.text,

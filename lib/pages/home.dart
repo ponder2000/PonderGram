@@ -55,10 +55,10 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  handleSignIn(GoogleSignInAccount account) {
+  handleSignIn(GoogleSignInAccount account) async {
     if (account != null) {
       print('Signed in user : $account');
-      createUserInDB();
+      await createUserInDB();
       setState(() {
         isAuth = true;
       });
@@ -69,13 +69,13 @@ class _HomeState extends State<Home> {
     }
   }
 
-  createUserInDB() async {
+  Future<void> createUserInDB() async {
     //check if user exist already
     final GoogleSignInAccount user = googleSignIn.currentUser;
     DocumentSnapshot doc = await usersRef.doc(user.id).get();
     //if the users doesn't exist then take them to create account page and set up their profile
     if (!doc.exists) {
-      final username = await Navigator.push(
+      final String username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
       //get username from create_account and make user in users collection
       usersRef.doc(user.id).set({

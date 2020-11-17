@@ -12,18 +12,27 @@ class _CreateAccountState extends State<CreateAccount> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController usernameController = TextEditingController();
   String username;
-  bool isValidated = false;
+  bool isValidated = true;
 
-  submit() {
+  submit(BuildContext context) {
+    setState(() {
+      usernameController.text.trim().length < 4 ||
+              usernameController.text.isEmpty ||
+              usernameController.text.trim().length > 12
+          ? isValidated = false
+          : isValidated = true;
+    });
     if (isValidated) {
       print("---> Username submitted!");
       formKey.currentState.save();
       SnackBar snackBar = SnackBar(content: Text("Welcome $username"));
       scaffoldKey.currentState.showSnackBar(snackBar);
-      username = username.trim().toLowerCase();
+      username = usernameController.text.trim().toLowerCase();
       Timer(Duration(seconds: 2), () {
         Navigator.pop(context, username);
       });
+    } else {
+      print('--> having error validating');
     }
   }
 
@@ -33,7 +42,7 @@ class _CreateAccountState extends State<CreateAccount> {
       key: scaffoldKey,
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.7),
-        onPressed: submit,
+        onPressed: () => submit(context),
         child: Icon(Icons.done),
       ),
       body: Container(
@@ -68,25 +77,35 @@ class _CreateAccountState extends State<CreateAccount> {
               child: Form(
                 key: formKey,
                 child: TextFormField(
-                  // autovalidate: true,
+                  controller: usernameController,
                   onSaved: (val) {
                     this.username = val;
                   },
                   validator: (val) {
                     if (val.trim().length < 4 || val.isEmpty) {
-                      this.isValidated = false;
+                      setState(() {
+                        this.isValidated = false;
+                      });
                       return "Username too short";
                     } else if (val.trim().length > 12) {
-                      this.isValidated = false;
+                      setState(() {
+                        this.isValidated = false;
+                      });
                       return "Username too long";
                     } else {
-                      this.isValidated = true;
+                      setState(() {
+                        this.isValidated = true;
+                      });
                       return null;
                     }
                   },
                   decoration: InputDecoration(
                     icon: Icon(Icons.alternate_email),
                     labelText: "username",
+                    errorText: isValidated
+                        ? null
+                        : "Username must be between 4 to 12 char",
+                    hintText: "Set your username",
                   ),
                 ),
               ),

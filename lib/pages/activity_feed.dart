@@ -11,23 +11,18 @@ class ActivityFeedPage extends StatefulWidget {
 }
 
 class _ActivityFeedPageState extends State<ActivityFeedPage> {
-  getActivityFeed() async {
-    QuerySnapshot snapshot = await activityFeedRef
-        .doc(currentUser.id)
-        .collection('feedItems')
-        .orderBy('timestamp', descending: true)
-        .limit(20)
-        .get();
+  bool isLoading = false;
 
-    List<ActivityFeedItem> feedItems = [];
-    snapshot.docs.forEach((doc) {
-      feedItems.add(ActivityFeedItem.fromDocument(doc));
-    });
-    return feedItems;
+  getActivityFeed() async {
+    QuerySnapshot snapshot =
+        await activityFeedRef.doc(currentUser.id).collection('feedItems').get();
+
+    return snapshot;
   }
 
   @override
   Widget build(BuildContext context) {
+    // getActivityFeed();
     return Scaffold(
       appBar: header(context, isAppTitle: false, title: "activity"),
       body: Container(
@@ -35,8 +30,13 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
           future: getActivityFeed(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) return circularProgress();
+            print(snapshot.hasData.toString());
+            List<ActivityFeedItem> feedItems = [];
+            snapshot.data.docs.forEach((d) {
+              feedItems.add(ActivityFeedItem.fromDocument(d));
+            });
             return ListView(
-              children: snapshot.data,
+              children: feedItems,
             );
           },
         ),

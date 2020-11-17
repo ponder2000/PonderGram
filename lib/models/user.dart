@@ -13,12 +13,12 @@ class User {
 
   factory User.fromDocument(DocumentSnapshot doc) {
     return User(
-      id: doc['id'],
-      email: doc['email'],
-      photoUrl: doc['photoUrl'],
-      displayName: doc['displayName'],
-      bio: doc['bio'],
-      username: doc['username'],
+      id: doc.data()['id'],
+      email: doc.data()['email'],
+      photoUrl: doc.data()['photoUrl'],
+      displayName: doc.data()['displayName'],
+      bio: doc.data()['bio'],
+      username: doc.data()['username'],
     );
   }
 }
