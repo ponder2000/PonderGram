@@ -88,7 +88,7 @@ class _HomeState extends State<Home> {
         "timestamp": timestamp,
       });
 
-      doc = await userRef.doc(user.id).get();
+      doc = await usersRef.doc(user.id).get();
     }
 
     currentUser = User.fromDocument(doc);

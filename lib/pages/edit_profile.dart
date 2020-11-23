@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
-import 'package:pondergram/pages/timeline.dart';
 import 'package:pondergram/widgets/loading.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -28,7 +27,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     setState(() {
       isLoading = true;
     });
-    DocumentSnapshot doc = await userRef.doc(widget.currentUserId).get();
+    DocumentSnapshot doc = await usersRef.doc(widget.currentUserId).get();
     this.user = User.fromDocument(doc);
     usernameController.text = user.username;
     bioController.text = user.bio;
@@ -57,7 +56,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
 
     if (isValidBio && isValidUsername) {
-      userRef.doc(widget.currentUserId).update({
+      usersRef.doc(widget.currentUserId).update({
         "username": usernameController.text.trim().toLowerCase(),
         "bio": bioController.text.trim(),
       });

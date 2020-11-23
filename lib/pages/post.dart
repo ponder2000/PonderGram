@@ -169,7 +169,7 @@ class _PostState extends State<Post> {
 
   buildPostHeader() {
     return FutureBuilder(
-        future: userRef.doc(ownerId).get(),
+        future: usersRef.doc(ownerId).get(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return circularProgress();
           User user = User.fromDocument(snapshot.data);

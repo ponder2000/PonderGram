@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:pondergram/widgets/loading.dart';
 import 'package:pondergram/widgets/reusable_header.dart';
 
-final userRef = FirebaseFirestore.instance.collection('users');
+import 'home.dart';
+
+// final userRef = FirebaseFirestore.instance.collection('users');
 
 class TimeLinePage extends StatefulWidget {
   @override
@@ -21,13 +23,16 @@ class _TimeLinePageState extends State<TimeLinePage> {
     return Scaffold(
       appBar: header(context, isAppTitle: true),
       body: StreamBuilder<QuerySnapshot>(
-        stream: userRef.snapshots(),
+        stream: usersRef.snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return circularProgress();
           }
-          final children =
-              snapshot.data.docs.map((d) => Text(d['username'])).toList();
+          List<Text> children = [];
+          snapshot.data.docs.forEach((d) {
+            children.add(Text(d.data()['email']));
+          });
+          // print('-----> ${snapshot.data.docs}');
           return Container(
             child: ListView(
               children: children,
