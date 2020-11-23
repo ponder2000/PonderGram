@@ -21,7 +21,10 @@ class _ProfilePageState extends State<ProfilePage> {
   final String currentUserId = currentUser?.id;
   bool gridOrientation = true;
   bool isLoading = false;
+  bool isFollowing = false;
   int postCount = 0;
+  int followingCount = 0;
+  int followersCount = 0;
   List<Post> posts = [];
 
   buildCountCoulumn(String label, int count) {
@@ -70,20 +73,90 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Text(
             text,
             style: TextStyle(
-              color: Colors.white,
+              color: isFollowing ? Colors.black : Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
           decoration: BoxDecoration(
-            color: Colors.blue,
+            color: isFollowing ? Colors.white : Colors.blue,
             border: Border.all(
-              color: Colors.white,
+              color: isFollowing ? Colors.grey : Colors.blue,
             ),
             borderRadius: BorderRadius.circular(6.0),
           ),
         ),
       ),
     );
+  }
+
+  handleUnfollowUser() {
+    setState(() {
+      isFollowing = false;
+    });
+    // remove the follower from the other user list
+    followersRef
+        .doc(widget.profileId)
+        .collection('userFollowers')
+        .doc(currentUserId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+    // delete other user from following
+    followingRef
+        .doc(currentUserId)
+        .collection('userFollowing')
+        .doc(widget.profileId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+    // remove notification
+    activityFeedRef
+        .doc(widget.profileId)
+        .collection('feedItems')
+        .doc(currentUserId)
+        .get()
+        .then((value) {
+      if (value.exists) {
+        value.reference.delete();
+      }
+    });
+  }
+
+  handleFollowUser() {
+    setState(() {
+      isFollowing = true;
+    });
+    // current user follows another users, update the other users followers collection
+    followersRef
+        .doc(widget.profileId)
+        .collection('userFollowers')
+        .doc(currentUserId)
+        .set({});
+    // add other user to following
+    followingRef
+        .doc(currentUserId)
+        .collection('userFollowing')
+        .doc(widget.profileId)
+        .set({});
+    // add notification of following to other users application
+    activityFeedRef
+        .doc(widget.profileId)
+        .collection('feedItems')
+        .doc(currentUserId)
+        .set({
+      'type': 'follow',
+      'ownerId': widget.profileId,
+      'username': currentUser.username,
+      'userId': currentUserId,
+      'userProfileImg': currentUser.photoUrl,
+      'timestamp': timestamp,
+    });
   }
 
   buildProfileButton() {
@@ -94,9 +167,18 @@ class _ProfilePageState extends State<ProfilePage> {
         text: "Edit Profile",
         function: editProfile,
       );
-    } else {
+    } else if (isFollowing) {
+      return buildButton(
+        text: "Unfollow",
+        function: handleUnfollowUser,
+      );
+    }
+    {
       // else follow or unfollow user
-      return Text("");
+      return buildButton(
+        text: "Follow",
+        function: handleFollowUser,
+      );
     }
   }
 
@@ -129,8 +211,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             buildCountCoulumn("posts", postCount),
-                            buildCountCoulumn("followers", 0),
-                            buildCountCoulumn("following", 0),
+                            buildCountCoulumn("followers", followersCount),
+                            buildCountCoulumn("following", followingCount),
                           ],
                         ),
                         Row(
@@ -184,6 +266,43 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     getProfilePosts();
+    getProfileFollowing();
+    getProfileFollowers();
+    checkFollowing();
+  }
+
+  getProfileFollowing() async {
+    QuerySnapshot snapshot = await followingRef
+        .doc(widget.profileId)
+        .collection('userFollowing')
+        .get();
+    setState(() {
+      this.followingCount = snapshot.docs.length;
+    });
+  }
+
+  getProfileFollowers() async {
+    QuerySnapshot snapshot = await followersRef
+        .doc(widget.profileId)
+        .collection('userFollowers')
+        .get();
+    setState(() {
+      this.followersCount = snapshot.docs.length;
+    });
+  }
+
+  checkFollowing() async {
+    DocumentSnapshot doc = await followersRef
+        .doc(widget.profileId)
+        .collection('userFollowers')
+        .doc(currentUserId)
+        .get();
+
+    if (doc.exists) {
+      setState(() {
+        isFollowing = true;
+      });
+    }
   }
 
   getProfilePosts() async {
