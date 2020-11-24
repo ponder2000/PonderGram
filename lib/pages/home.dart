@@ -201,16 +201,26 @@ class _HomeState extends State<Home> {
             ),
             // login button
             Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                      blurRadius: 15.0, spreadRadius: 5.3, color: Colors.grey)
+                ],
+                borderRadius: BorderRadius.circular(15.0),
+              ),
               height: 50,
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: RaisedButton(
-                textColor: Colors.white,
-                color: Theme.of(context).primaryColor.withOpacity(0.6),
-                child: Text(
-                  'Sign in with Google',
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
+              child: FlatButton(
+                textColor: Colors.black,
+                // color: Theme.of(context).primaryColor.withOpacity(0.6),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.login),
+                    Text(' Sign in with Google',
+                        style: TextStyle(fontSize: 20)),
+                  ],
                 ),
                 onPressed: onPressedSignIn,
               ),
