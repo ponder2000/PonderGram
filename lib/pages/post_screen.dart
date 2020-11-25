@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/post.dart';
 import 'package:pondergram/widgets/loading.dart';
-import 'package:pondergram/widgets/reusable_header.dart';
 
 class PostScreen extends StatelessWidget {
   final String userId;

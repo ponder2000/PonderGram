@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/profile.dart';
-import 'package:pondergram/pages/timeline.dart';
 import 'package:pondergram/widgets/custom_image.dart';
 import 'package:pondergram/widgets/loading.dart';
 
