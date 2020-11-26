@@ -15,6 +15,7 @@ import 'comments.dart';
 class Post extends StatefulWidget {
   final String postId, ownerId, username, location, caption, mediaUrl;
   final dynamic likes;
+  Timestamp timestamp;
 
   Post(
       {this.postId,
@@ -23,7 +24,8 @@ class Post extends StatefulWidget {
       this.location,
       this.mediaUrl,
       this.ownerId,
-      this.username});
+      this.username,
+      this.timestamp});
 
   factory Post.fromDocument(DocumentSnapshot doc) {
     return Post(
@@ -34,6 +36,7 @@ class Post extends StatefulWidget {
       mediaUrl: doc.data()['mediaUrl'],
       ownerId: doc.data()['ownerId'],
       username: doc.data()['username'],
+      timestamp: doc.data()['timestamp'],
     );
   }
 
