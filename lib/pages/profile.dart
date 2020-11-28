@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pondergram/constants.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/post.dart';
 import 'package:pondergram/pages/timeline.dart';
@@ -43,7 +44,8 @@ class _ProfilePageState extends State<ProfilePage> {
         Text(
           label,
           style: TextStyle(
-            color: Colors.grey,
+            fontFamily: 'Texturina',
+            color: Theme.of(context).accentColor,
             fontSize: 16.0,
             fontWeight: FontWeight.w400,
           ),
@@ -75,6 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: TextStyle(
               color: isFollowing ? Colors.black : Colors.white,
               fontWeight: FontWeight.bold,
+              fontFamily: 'Texturina',
             ),
           ),
           decoration: BoxDecoration(
@@ -191,71 +194,78 @@ class _ProfilePageState extends State<ProfilePage> {
         }
         User user = User.fromDocument(snapshot.data);
         return Padding(
-          padding: EdgeInsets.all(15.0),
-          child: Column(
-            children: [
-              // profile pic and counts and profile button
-              Row(
-                children: [
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundColor: Colors.grey,
-                    backgroundImage: CachedNetworkImageProvider(user.photoUrl),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            buildCountCoulumn("posts", postCount),
-                            buildCountCoulumn("followers", followersCount),
-                            buildCountCoulumn("following", followingCount),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            buildProfileButton(),
-                          ],
-                        ),
-                      ],
+          padding: EdgeInsets.fromLTRB(5.0, 15.0, 5.0, 0.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            decoration: BoxDecoration(
+              boxShadow: [BoxShadow(blurRadius: 10.0)],
+              color: Colors.white.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            child: Column(
+              children: [
+                Center(
+                  child: Text("",
+                      style: TextStyle(
+                          fontSize: 15.0, fontWeight: FontWeight.bold)),
+                ),
+                // profile pic and counts and profile button
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 40.0,
+                      backgroundColor: Colors.grey,
+                      backgroundImage:
+                          CachedNetworkImageProvider(user.photoUrl),
                     ),
-                  ),
-                ],
-              ),
-              // usernaem
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 12.0),
-                child: Text(
-                  user.username,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.0,
-                  ),
+                    Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                buildCountCoulumn("posts", postCount),
+                                buildCountCoulumn("followers", followersCount),
+                                buildCountCoulumn("following", followingCount),
+                              ],
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                buildProfileButton(),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              // displayname
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 4.0),
-                child: Text(
-                  user.displayName,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                // usernaem
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(user.username + ' || ' + user.displayName,
+                      style: TextStyle(
+                          fontFamily: 'Texturina',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.0),
+                      overflow: TextOverflow.ellipsis),
                 ),
-              ),
-              // bio
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(top: 4.0),
-                child: Text(user.bio),
-              ),
-            ],
+                // bio
+                Container(
+                  alignment: Alignment.centerLeft,
+                  padding: EdgeInsets.only(top: 4.0),
+                  child: Text(user.bio,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontFamily: 'Texturina')),
+                ),
+                Divider(height: 4.0),
+              ],
+            ),
           ),
         );
       },
@@ -333,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     return gridOrientation
         ? GridView.count(
-            crossAxisCount: 3,
+            crossAxisCount: 2,
             childAspectRatio: 1.0,
             mainAxisSpacing: 1.5,
             crossAxisSpacing: 1.5,
@@ -353,7 +363,10 @@ class _ProfilePageState extends State<ProfilePage> {
         IconButton(
           icon: Icon(
             Icons.grid_on,
-            size: 30.0,
+            size: 25.0,
+            color: gridOrientation
+                ? Theme.of(context).accentColor
+                : Theme.of(context).accentColor.withOpacity(0.5),
           ),
           color: gridOrientation ? Theme.of(context).primaryColor : Colors.grey,
           onPressed: gridOrientation
@@ -371,7 +384,10 @@ class _ProfilePageState extends State<ProfilePage> {
         IconButton(
           icon: Icon(
             Icons.list,
-            size: 30.0,
+            size: 25.0,
+            color: gridOrientation
+                ? Theme.of(context).accentColor.withOpacity(0.5)
+                : Theme.of(context).accentColor,
           ),
           color: gridOrientation ? Colors.grey : Theme.of(context).primaryColor,
           onPressed: gridOrientation
@@ -388,16 +404,19 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: header(context, isAppTitle: false, title: "profile"),
-      body: ListView(
-        children: [
-          buildProfileHeader(),
-          Divider(height: 2.0),
-          buildToggleOrientation(),
-          Divider(height: 2.0),
-          buildProfilePost(),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        // appBar: header(context, isAppTitle: false, title: "profile"),
+        body: ListView(
+          children: [
+            buildProfileHeader(),
+            Divider(height: 2.0),
+            buildToggleOrientation(),
+            Divider(height: 2.0),
+            buildProfilePost(),
+          ],
+        ),
       ),
     );
   }

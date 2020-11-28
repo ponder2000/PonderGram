@@ -80,7 +80,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           padding: EdgeInsets.only(top: 12.0),
           child: Text(
             "Username",
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(
+              color: Theme.of(context).accentColor,
+              fontFamily: 'Texturina',
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         TextField(
@@ -104,7 +108,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
           padding: EdgeInsets.only(top: 12.0),
           child: Text(
             "bio",
-            style: TextStyle(color: Colors.grey),
+            style: TextStyle(
+              color: Theme.of(context).accentColor,
+              fontFamily: 'Texturina',
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
         TextField(
@@ -121,70 +129,85 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   buildEditProfile() {
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: AppBar(
-        actions: [
-          FlatButton.icon(
-              icon: Icon(
-                Icons.logout,
-                color: Theme.of(context).accentColor,
-              ),
-              onPressed: logout,
-              label: Text(
-                "LOGOUT",
-                style: TextStyle(
+    return SafeArea(
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar: AppBar(
+          elevation: 0.0,
+          actions: [
+            FlatButton.icon(
+                icon: Icon(
+                  Icons.logout,
                   color: Theme.of(context).accentColor,
-                  fontWeight: FontWeight.bold,
                 ),
-              )),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.7),
-        onPressed: submit,
-        child: Icon(Icons.done),
-      ),
-      body: isLoading
-          ? circularProgress()
-          : Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Theme.of(context).primaryColor,
-                    Theme.of(context).accentColor,
+                onPressed: logout,
+                label: Text(
+                  "LOGOUT",
+                  style: TextStyle(
+                    color: Theme.of(context).accentColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          backgroundColor: Theme.of(context).accentColor.withOpacity(0.9),
+          onPressed: submit,
+          child: Icon(Icons.done, size: 30.0),
+        ),
+        body: isLoading
+            ? circularProgress()
+            : Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                ),
+                alignment: Alignment.center,
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: 16.0,
+                        bottom: 8.0,
+                      ),
+                      child: CachedNetworkImage(
+                        imageUrl: user.photoUrl,
+                        imageBuilder: (context, imageProvider) => Container(
+                          width: 150.0,
+                          height: 150.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                                image: imageProvider, fit: BoxFit.contain),
+                          ),
+                        ),
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          buildUsernameField(),
+                          buildBioField(),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Made with flutter ❤️ by Jay Saha',
+                        style: TextStyle(
+                          fontFamily: 'Texturina',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              alignment: Alignment.center,
-              child: ListView(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: 16.0,
-                      bottom: 8.0,
-                    ),
-                    child: CircleAvatar(
-                      radius: 60.0,
-                      backgroundColor: Colors.grey,
-                      backgroundImage:
-                          CachedNetworkImageProvider(user.photoUrl),
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        buildUsernameField(),
-                        buildBioField(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+      ),
     );
   }
 

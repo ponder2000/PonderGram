@@ -83,11 +83,14 @@ class _TimeLinePageState extends State<TimeLinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: header(context, isAppTitle: true),
-      body: ListView(
-        children: [
-          !isLoaded ? circularProgress() : buildTimeline(),
-        ],
+      body: SafeArea(
+        child: ListView(
+          children: [
+            !isLoaded ? Center(child: circularProgress()) : buildTimeline(),
+          ],
+        ),
       ),
     );
   }

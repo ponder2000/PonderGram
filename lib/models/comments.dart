@@ -28,14 +28,25 @@ class Comment extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ListTile(
-          title: Text(comment),
-          leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(avatarUrl),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+          child: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(blurRadius: 5.0, color: Theme.of(context).accentColor)
+              ],
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: ListTile(
+              title: Text(comment),
+              leading: CircleAvatar(
+                backgroundImage: CachedNetworkImageProvider(avatarUrl),
+              ),
+              subtitle: Text(timeago.format(timestamp.toDate())),
+            ),
           ),
-          subtitle: Text(timeago.format(timestamp.toDate())),
         ),
-        Divider(),
       ],
     );
   }

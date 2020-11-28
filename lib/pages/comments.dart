@@ -73,31 +73,35 @@ class _CommentsState extends State<Comments> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: header(context, isAppTitle: false, title: "Comments"),
-      body: Column(
-        children: [
-          Expanded(child: buildComments()),
-          Divider(),
-          ListTile(
-            title: TextFormField(
-              onChanged: (val) {
-                setState(() {
-                  canPost = val.trim().isEmpty;
-                });
-              },
-              controller: commentController,
-              decoration: InputDecoration(
-                labelText: "write a comment",
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        appBar: header(context, isAppTitle: false, title: "Comments"),
+        body: Column(
+          children: [
+            Expanded(child: buildComments()),
+            Divider(),
+            ListTile(
+              tileColor: Colors.white,
+              title: TextFormField(
+                onChanged: (val) {
+                  setState(() {
+                    canPost = val.trim().isEmpty;
+                  });
+                },
+                controller: commentController,
+                decoration: InputDecoration(
+                  labelText: "write a comment",
+                ),
               ),
-            ),
-            trailing: OutlineButton(
-              onPressed: canPost ? () {} : () => addComment(),
-              borderSide: BorderSide.none,
-              child: Text("Post"),
-            ),
-          )
-        ],
+              trailing: OutlineButton(
+                onPressed: canPost ? () {} : () => addComment(),
+                borderSide: BorderSide.none,
+                child: Text("Post"),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

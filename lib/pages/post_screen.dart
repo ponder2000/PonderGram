@@ -19,11 +19,12 @@ class PostScreen extends StatelessWidget {
         return Center(
           child: SafeArea(
             child: Scaffold(
+              backgroundColor: Theme.of(context).primaryColor,
               // appBar: header(context, title: post.caption),
               body: ListView(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(bottom: 5.0),
+                    margin: EdgeInsets.symmetric(vertical: 15.0),
                     child: post,
                   ),
                 ],

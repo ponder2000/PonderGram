@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pondergram/constants.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/post_screen.dart';
 import 'package:pondergram/pages/profile.dart';
@@ -102,9 +103,18 @@ class ActivityFeedItem extends StatelessWidget {
   Widget build(BuildContext context) {
     configureMediaPreview(context);
     return Padding(
-      padding: EdgeInsets.only(bottom: 2.0),
+      padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
       child: Container(
-        color: Colors.white54,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 7.0,
+              color: Theme.of(context).accentColor,
+            )
+          ],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         child: ListTile(
           title: GestureDetector(
             onTap: () => showProfile(context, profileId: userId),
@@ -113,16 +123,13 @@ class ActivityFeedItem extends StatelessWidget {
               text: TextSpan(
                   style: TextStyle(fontSize: 14.0, color: Colors.black),
                   children: [
-                    TextSpan(
-                        text: username,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )),
+                    TextSpan(text: username, style: kBoldText),
                     TextSpan(text: ' $activityItemText')
                   ]),
             ),
           ),
           leading: CircleAvatar(
+            backgroundColor: Theme.of(context).primaryColor,
             backgroundImage: CachedNetworkImageProvider(userProfileImage),
           ),
           subtitle: Text(

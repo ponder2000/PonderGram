@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:pondergram/constants.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/profile.dart';
@@ -55,55 +56,93 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  buildAllUser() {
+    return FutureBuilder(
+      future: usersRef.get(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return circularProgress();
+        List<GridTile> _userBoxs = [];
+        snapshot.data.docs.forEach((d) {
+          User _user = User.fromDocument(d);
+          UserBox _ub = UserBox(_user);
+          _userBoxs.add(GridTile(child: _ub));
+        });
+        return GridView.count(
+          crossAxisCount: 2,
+          childAspectRatio: 1.0,
+          mainAxisSpacing: 1.5,
+          crossAxisSpacing: 1.5,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          children: _userBoxs,
+        );
+      },
+    );
+  }
+
   buildSearchResults() {
     return FutureBuilder(
-        future: seaechResultsFuture,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return circularProgress();
-          }
-          List<UserResult> searchResults = [];
-          snapshot.data.docs.forEach((doc) {
-            User user = User.fromDocument(doc);
-            UserResult userResult = UserResult(user);
-            searchResults.add(userResult);
-          });
-          return ListView(
-            children: searchResults,
-          );
+      future: seaechResultsFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return circularProgress();
+        List<GridTile> _userBoxs = [];
+        snapshot.data.docs.forEach((d) {
+          User _user = User.fromDocument(d);
+          UserBox _ub = UserBox(_user);
+          _userBoxs.add(GridTile(child: _ub));
         });
+        return GridView.count(
+          crossAxisCount: 2,
+          childAspectRatio: 1.0,
+          mainAxisSpacing: 1.5,
+          crossAxisSpacing: 1.5,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          children: _userBoxs,
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: TextFormField(
-          controller: searchController,
-          onFieldSubmitted: handleSearch,
-          decoration: InputDecoration(
-            hintText: "Search for a User",
-            prefixIcon: Icon(Icons.account_box),
-            suffixIcon: IconButton(
-              onPressed: clearedSearch,
-              icon: Icon(Icons.clear),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Theme.of(context).primaryColor,
+          title: TextFormField(
+            controller: searchController,
+            onFieldSubmitted: handleSearch,
+            decoration: InputDecoration(
+              hintText: "Search for a User",
+              prefixIcon: Icon(
+                Icons.supervised_user_circle,
+                color: Theme.of(context).accentColor,
+                size: 35.0,
+              ),
+              suffixIcon: IconButton(
+                onPressed: clearedSearch,
+                icon: Icon(
+                  Icons.clear,
+                  color: Theme.of(context).accentColor,
+                ),
+              ),
             ),
           ),
         ),
+        body:
+            seaechResultsFuture == null ? buildAllUser() : buildSearchResults(),
       ),
-      body:
-          seaechResultsFuture == null ? buildNoContent() : buildSearchResults(),
     );
   }
 }
 
-class UserResult extends StatelessWidget {
-  final User user;
-  UserResult(this.user);
+class UserBox extends StatelessWidget {
+  final User _user;
+  UserBox(this._user);
 
-  //show a full profile page
   showProfile(BuildContext context, {String profileId}) {
     Navigator.push(
       context,
@@ -117,32 +156,46 @@ class UserResult extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).accentColor.withOpacity(0.6),
-      child: Column(
-        children: [
-          GestureDetector(
-            onTap: () => showProfile(context, profileId: user.id),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.grey,
-                backgroundImage: CachedNetworkImageProvider(user.photoUrl),
-              ),
-              title: Text(
-                user.displayName,
-                style: TextStyle(
-                  // color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(user.username),
-            ),
+    return Padding(
+      padding: EdgeInsets.all(20.0),
+      child: GestureDetector(
+        onTap: () => showProfile(context, profileId: _user.id),
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 20.0),
+          decoration: BoxDecoration(
+            boxShadow: [BoxShadow(blurRadius: 10.0)],
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
           ),
-          Divider(
-            height: 5.0,
-            color: Colors.black,
-          )
-        ],
+          child: Column(
+            children: [
+              CachedNetworkImage(
+                imageUrl: _user.photoUrl,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 80.0,
+                  height: 80.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => CircularProgressIndicator(),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
+              Container(height: 10.0),
+              Text(
+                _user.username,
+                style: kBoldText,
+              ),
+              Text(
+                _user.displayName,
+                style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

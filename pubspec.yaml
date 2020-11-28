@@ -23,6 +23,7 @@ dependencies:
   uuid: ^2.2.2
   animator: ^2.0.1
   timeago: ^2.0.28
+  curved_navigation_bar: ^0.3.4
 
 dev_dependencies:
   flutter_test:
@@ -35,6 +36,18 @@ flutter:
   assets:
     - assets/images/
 
+  fonts:
+    - family: ComicNeue
+      fonts:
+        - asset: assets/fonts/ComicNeue-Regular.ttf
+
+    - family: Orbitron
+      fonts:
+        - asset: assets/fonts/Orbitron-VariableFont_wght.ttf
+
+    - family: Texturina
+      fonts:
+        - asset: assets/fonts/Texturina-Italic-VariableFont_opsz,wght.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

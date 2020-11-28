@@ -28,9 +28,9 @@ class _CreateAccountState extends State<CreateAccount> {
       SnackBar snackBar = SnackBar(content: Text("Welcome $username"));
       scaffoldKey.currentState.showSnackBar(snackBar);
       username = usernameController.text.trim().toLowerCase();
-      Timer(Duration(seconds: 2), () {
-        Navigator.pop(context, username);
-      });
+      print('---> username in CHILD widget $username');
+
+      Navigator.pop(context, username);
     } else {
       print('--> having error validating');
     }
@@ -77,6 +77,10 @@ class _CreateAccountState extends State<CreateAccount> {
               child: Form(
                 key: formKey,
                 child: TextFormField(
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontFamily: 'Texturina'),
                   controller: usernameController,
                   onSaved: (val) {
                     this.username = val;
@@ -100,7 +104,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     }
                   },
                   decoration: InputDecoration(
-                    icon: Icon(Icons.alternate_email),
+                    icon: Icon(Icons.alternate_email, color: Colors.white),
                     labelText: "username",
                     errorText: isValidated
                         ? null

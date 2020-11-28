@@ -24,7 +24,8 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
   Widget build(BuildContext context) {
     // getActivityFeed();
     return Scaffold(
-      appBar: header(context, isAppTitle: false, title: "activity"),
+      backgroundColor: Theme.of(context).primaryColor,
+      // appBar: header(context, isAppTitle: false, title: "activity"),
       body: Container(
         child: FutureBuilder(
           future: getActivityFeed(),
@@ -35,8 +36,11 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
             snapshot.data.docs.forEach((d) {
               feedItems.add(ActivityFeedItem.fromDocument(d));
             });
-            return ListView(
-              children: feedItems,
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              child: ListView(
+                children: feedItems,
+              ),
             );
           },
         ),

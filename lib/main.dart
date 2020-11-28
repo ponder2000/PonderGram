@@ -15,8 +15,8 @@ class PonderGram extends StatelessWidget {
       title: 'PonderGram',
       debugShowCheckedModeBanner: true,
       theme: ThemeData(
-        primarySwatch: Colors.purple,
-        accentColor: Colors.amber,
+        primarySwatch: Colors.grey,
+        accentColor: Colors.black,
       ),
       home: Home(),
     );

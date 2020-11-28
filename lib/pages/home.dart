@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,7 @@ class _HomeState extends State<Home> {
     if (!doc.exists) {
       final String username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
+      print('---> username in parent widget $username');
       //get username from create_account and make user in users collection
       usersRef.doc(user.id).set({
         "id": user.id,
@@ -117,51 +119,37 @@ class _HomeState extends State<Home> {
 
   // view when sign in is done
   Widget buildAuthScreen() {
-    return Scaffold(
-      body: PageView(
-        children: [
-          // RaisedButton(
-          //   onPressed: onPressedLogOut,
-          //   child: Text("LogOut"),
-          // ),
-          TimeLinePage(),
-          ActivityFeedPage(),
-          UploadPage(currentUser: currentUser),
-          SearchPage(),
-          ProfilePage(profileId: currentUser?.id),
-        ],
-        controller: pageController,
-        onPageChanged: onPageChanged,
-        physics: NeverScrollableScrollPhysics(), // user can not scroll
-      ),
-      bottomNavigationBar: CupertinoTabBar(
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
-        currentIndex: pageIndex,
-        onTap: (val) {
-          pageController.animateToPage(val,
-              duration: Duration(milliseconds: 100), curve: Curves.easeIn);
-        },
-        activeColor: Theme.of(context).accentColor,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.whatshot),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.add_a_photo,
-              size: 35.5,
-            ),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-          ),
-        ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Theme.of(context).primaryColor,
+        body: PageView(
+          children: [
+            TimeLinePage(),
+            ActivityFeedPage(),
+            UploadPage(currentUser: currentUser),
+            SearchPage(),
+            ProfilePage(profileId: currentUser?.id),
+          ],
+          controller: pageController,
+          onPageChanged: onPageChanged,
+          physics: NeverScrollableScrollPhysics(), // user can not scroll
+        ),
+        bottomNavigationBar: CurvedNavigationBar(
+          backgroundColor: Theme.of(context).primaryColor.withOpacity(0.8),
+          // currentIndex: pageIndex,
+          onTap: (val) {
+            pageController.animateToPage(val,
+                duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+          },
+          // activeColor: Theme.of(context).accentColor,
+          items: [
+            Icon(Icons.whatshot),
+            Icon(Icons.notifications_active),
+            Icon(Icons.add_a_photo, size: 35.5),
+            Icon(Icons.search),
+            Icon(Icons.account_circle),
+          ],
+        ),
       ),
     );
     // return CreateAccount();
@@ -176,8 +164,8 @@ class _HomeState extends State<Home> {
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
             colors: [
-              Theme.of(context).primaryColor.withOpacity(0.8),
-              Theme.of(context).accentColor.withOpacity(0.8),
+              Theme.of(context).primaryColor,
+              Theme.of(context).accentColor,
             ],
           ),
         ),
@@ -190,7 +178,8 @@ class _HomeState extends State<Home> {
               child: Text(
                 'PonderGram',
                 style: TextStyle(
-                  fontSize: 60.0,
+                  fontFamily: 'Orbitron',
+                  fontSize: 45.0,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
@@ -205,7 +194,9 @@ class _HomeState extends State<Home> {
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                      blurRadius: 15.0, spreadRadius: 5.3, color: Colors.grey)
+                    blurRadius: 15.0,
+                    spreadRadius: 5.3,
+                  )
                 ],
                 borderRadius: BorderRadius.circular(15.0),
               ),

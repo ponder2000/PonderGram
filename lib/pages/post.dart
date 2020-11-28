@@ -4,6 +4,7 @@ import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pondergram/constants.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/pages/profile.dart';
@@ -57,7 +58,7 @@ class _PostState extends State<Post> {
   Map likes;
   int likeCount = 0;
   final String currentUserId = currentUser?.id;
-  bool isLike;
+  bool isLike = false;
   bool showHeart = false;
 
   _PostState(
@@ -73,7 +74,13 @@ class _PostState extends State<Post> {
   void initState() {
     super.initState();
     setState(() {
-      isLike = likes[currentUserId] == null ? false : true;
+      // print('---> ${likes[currentUserId]}');
+      if (likes[currentUserId] == null)
+        isLike = false;
+      else if (likes[currentUserId])
+        isLike = true;
+      else
+        isLike = false;
       likeCount = getLikeCount(likes);
     });
   }
@@ -190,10 +197,7 @@ class _PostState extends State<Post> {
               ),
               onTap: () => showProfile(context, profileId: user.id),
             ),
-            subtitle: Text(location),
-            trailing: IconButton(
-                onPressed: () => print("---> deleting post"),
-                icon: Icon(Icons.more_vert)),
+            subtitle: Text(location, style: kBoldText),
           );
         });
   }
@@ -217,7 +221,7 @@ class _PostState extends State<Post> {
                     child: Icon(
                       Icons.favorite,
                       size: 80.0,
-                      color: Colors.white,
+                      color: Colors.white.withOpacity(0.8),
                     ),
                   ),
                 )
@@ -290,18 +294,30 @@ class _PostState extends State<Post> {
             ),
           ],
         ),
+        Container(height: 5.0),
       ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        buildPostHeader(),
-        buildPostImage(),
-        buildPostFooter(),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        padding: EdgeInsets.all(5.0),
+        decoration: BoxDecoration(
+          boxShadow: [BoxShadow(blurRadius: 10.0)],
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        child: Column(
+          children: [
+            buildPostHeader(),
+            buildPostImage(),
+            buildPostFooter(),
+          ],
+        ),
+      ),
     );
   }
 }

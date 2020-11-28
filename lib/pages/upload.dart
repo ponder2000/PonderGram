@@ -81,16 +81,17 @@ class _UploadPageState extends State<UploadPage> {
   // Upload Screen UI
   Container buildSplashScreen() {
     return Container(
-      color: Theme.of(context).accentColor.withOpacity(0.4),
+      color: Theme.of(context).primaryColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
+          Container(
+            padding: const EdgeInsets.all(10.0),
             // child: SvgPicture.asset('assets/images/picture.svg'),
             child: Image.asset('assets/images/camera.png'),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
+            padding: EdgeInsets.symmetric(vertical: 15.0),
             child: RaisedButton(
               color: Theme.of(context).accentColor,
               onPressed: () => selectImage(context),
@@ -170,8 +171,10 @@ class _UploadPageState extends State<UploadPage> {
   // create Post UI
   buildUploadPostScreen() {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
-        backgroundColor: Colors.white70,
+        elevation: 0.0,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           icon: Icon(
             Icons.arrow_back,
@@ -188,17 +191,22 @@ class _UploadPageState extends State<UploadPage> {
         children: [
           isUploading ? linearProgress() : Text(""),
           Container(
-            height: 220.0,
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            height: MediaQuery.of(context).size.height * 0.4,
             width: MediaQuery.of(context).size.width * 0.8,
             child: Center(
-              child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: FileImage(file),
-                    ),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  boxShadow: [
+                    BoxShadow(
+                      blurRadius: 7.0,
+                      color: Theme.of(context).accentColor,
+                    )
+                  ],
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: FileImage(file),
                   ),
                 ),
               ),
@@ -227,7 +235,7 @@ class _UploadPageState extends State<UploadPage> {
           ListTile(
             leading: Icon(
               Icons.pin_drop,
-              color: Colors.orange,
+              color: Theme.of(context).accentColor,
               size: 35.0,
             ),
             title: Container(
@@ -237,6 +245,7 @@ class _UploadPageState extends State<UploadPage> {
                 decoration: InputDecoration(
                   hintText: "Add Location",
                   border: InputBorder.none,
+                  focusColor: Theme.of(context).accentColor,
                 ),
               ),
             ),
@@ -262,8 +271,8 @@ class _UploadPageState extends State<UploadPage> {
               ),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0)),
-              color: Theme.of(context).primaryColor,
-              elevation: 5.0,
+              color: Theme.of(context).accentColor,
+              elevation: 10.0,
             ),
           ),
         ],
