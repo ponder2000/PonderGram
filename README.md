@@ -1,16 +1,24 @@
 # pondergram
 
-A new Flutter project.
+A social media application inspired from instagram.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- User can authenticate themselves using google account. Once authenticated the user will be created in database 👤
+- User can add posts on their account 🌃
+- User can follow other user to stay updated with their posts 👨‍👩‍👦‍👦
+- User can like ❤️ and comment 🗣on other user posts
+- If a user commented and liked someones post then the post owner will recive the notification regarding the updates in activity feed 🔔
+- Each user will have a personalised timeline contains post of the user and all the other user whom he/she follows 📱
+- And there is a search section to find other user to increase the network 🔎
 
-A few resources to get you started if this is your first Flutter project:
+## Technology stack
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+- The app is created with flutter and dart as the programming language (Advantage - The same source code can be used to create application on iOS and web) 😁
+- For database part, I used firestore as it's free and easy to use 😉
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## App Preview
+
+### [apk file link](https://linkfortheapk.com)
+
+To explore more download and use it 😁 and if you appriciate the work give a star ⭐️

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:pondergram/constants.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
@@ -31,29 +30,6 @@ class _SearchPageState extends State<SearchPage> {
       seaechResultsFuture = null;
     });
     searchController.clear();
-  }
-
-  buildNoContent() {
-    return Container(
-      child: Center(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            SvgPicture.asset(
-              'assets/images/fishing.svg',
-            ),
-            Text(
-              "Find Users",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 40.0,
-                fontWeight: FontWeight.w800,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   buildAllUser() {
