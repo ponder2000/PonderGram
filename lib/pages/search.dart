@@ -116,7 +116,7 @@ class _SearchPageState extends State<SearchPage> {
             controller: searchController,
             onFieldSubmitted: handleSearch,
             decoration: InputDecoration(
-              hintText: "Search for a User",
+              hintText: "Search by username",
               prefixIcon: Icon(
                 Icons.supervised_user_circle,
                 color: Theme.of(context).accentColor,

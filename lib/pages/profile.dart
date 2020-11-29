@@ -407,7 +407,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Theme.of(context).primaryColor,
-        // appBar: header(context, isAppTitle: false, title: "profile"),
+        appBar: header(context, isAppTitle: false, title: "PROFILE"),
         body: ListView(
           children: [
             buildProfileHeader(),

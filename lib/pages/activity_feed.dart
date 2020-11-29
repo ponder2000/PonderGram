@@ -25,7 +25,7 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
     // getActivityFeed();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      // appBar: header(context, isAppTitle: false, title: "activity"),
+      appBar: header(context, isAppTitle: false, title: "ACTIVITY"),
       body: Container(
         child: FutureBuilder(
           future: getActivityFeed(),

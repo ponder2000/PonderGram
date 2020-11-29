@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:pondergram/models/user.dart';
 import 'package:pondergram/pages/home.dart';
 import 'package:pondergram/widgets/loading.dart';
+import 'package:pondergram/widgets/reusable_header.dart';
 import 'package:uuid/uuid.dart';
 
 class UploadPage extends StatefulWidget {
@@ -283,6 +284,7 @@ class _UploadPageState extends State<UploadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: header(context, isAppTitle: false, title: "CREATE POST"),
       body: file == null ? buildSplashScreen() : buildUploadPostScreen(),
     );
   }
