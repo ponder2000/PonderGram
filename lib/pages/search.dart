@@ -49,7 +49,6 @@ class _SearchPageState extends State<SearchPage> {
           mainAxisSpacing: 1.5,
           crossAxisSpacing: 1.5,
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
           children: _userBoxs,
         );
       },
@@ -73,7 +72,6 @@ class _SearchPageState extends State<SearchPage> {
           mainAxisSpacing: 1.5,
           crossAxisSpacing: 1.5,
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
           children: _userBoxs,
         );
       },
