@@ -36,6 +36,7 @@ class _ActivityFeedPageState extends State<ActivityFeedPage> {
             snapshot.data.docs.forEach((d) {
               feedItems.add(ActivityFeedItem.fromDocument(d));
             });
+            feedItems.sort((a, b) => b.timestamp.compareTo(a.timestamp));
             return Padding(
               padding: EdgeInsets.symmetric(vertical: 10.0),
               child: ListView(

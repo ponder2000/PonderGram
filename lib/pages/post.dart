@@ -176,12 +176,73 @@ class _PostState extends State<Post> {
     );
   }
 
+  deletePost() async {
+    // post data delete
+    postsRef.doc(ownerId).collection('userPosts').doc(postId).get().then((d) {
+      if (d.exists) {
+        d.reference.delete();
+      }
+    });
+
+    // post storage delete
+    storageRef.child("post_$postId.jpg").delete();
+
+    // activity feed delete
+    QuerySnapshot activitySnapshot = await activityFeedRef
+        .doc(ownerId)
+        .collection("feedItems")
+        .where('postId', isEqualTo: postId)
+        .get();
+
+    activitySnapshot.docs.forEach((element) {
+      if (element.exists) element.reference.delete();
+    });
+
+    // comment delete
+    QuerySnapshot commentSnapshot =
+        await commentsRef.doc(postId).collection('comments').get();
+
+    commentSnapshot.docs.forEach((element) {
+      if (element.exists) element.reference.delete();
+    });
+  }
+
+  handleDeltePost(BuildContext parentContext) {
+    return showDialog(
+      context: parentContext,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text("Delete post?"),
+          children: [
+            SimpleDialogOption(
+              child: Text(
+                "Delete",
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                deletePost();
+              },
+            ),
+            SimpleDialogOption(
+              child: Text("Cancel"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   buildPostHeader() {
     return FutureBuilder(
         future: usersRef.doc(ownerId).get(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return circularProgress();
           User user = User.fromDocument(snapshot.data);
+          bool isPostOwner = currentUserId == ownerId;
           return ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.grey,
@@ -198,6 +259,12 @@ class _PostState extends State<Post> {
               onTap: () => showProfile(context, profileId: user.id),
             ),
             subtitle: Text(location, style: kBoldText),
+            trailing: isPostOwner
+                ? IconButton(
+                    onPressed: () => handleDeltePost(context),
+                    icon: Icon(Icons.more_vert),
+                  )
+                : Text(''),
           );
         });
   }
