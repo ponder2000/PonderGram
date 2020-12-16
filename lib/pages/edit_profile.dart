@@ -15,10 +15,10 @@ class EditProfilePage extends StatefulWidget {
 class _EditProfilePageState extends State<EditProfilePage> {
   bool isLoading = false;
   User user;
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController displayNameController = TextEditingController();
   TextEditingController bioController = TextEditingController();
   bool isValidBio = true;
-  bool isValidUsername = true;
+  bool isValiddisplayName = true;
 
   final formKey = GlobalKey<FormState>();
   final scaffoldKey = GlobalKey<ScaffoldState>();
@@ -29,7 +29,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
     DocumentSnapshot doc = await usersRef.doc(widget.currentUserId).get();
     this.user = User.fromDocument(doc);
-    usernameController.text = user.username;
+    displayNameController.text = user.displayName;
     bioController.text = user.bio;
     setState(() {
       isLoading = false;
@@ -44,20 +44,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   submit() {
     setState(() {
-      usernameController.text.trim().length < 4 ||
-              usernameController.text.isEmpty ||
-              usernameController.text.trim().length > 12
-          ? isValidUsername = false
-          : isValidUsername = true;
+      displayNameController.text.trim().length < 4 ||
+              displayNameController.text.isEmpty ||
+              displayNameController.text.trim().length > 12
+          ? isValiddisplayName = false
+          : isValiddisplayName = true;
 
       bioController.text.trim().length > 100
           ? isValidBio = false
           : isValidBio = true;
     });
 
-    if (isValidBio && isValidUsername) {
+    if (isValidBio && isValiddisplayName) {
       usersRef.doc(widget.currentUserId).update({
-        "username": usernameController.text.trim().toLowerCase(),
+        "displayName": displayNameController.text.trim(),
         "bio": bioController.text.trim(),
       });
 
@@ -72,14 +72,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
   }
 
-  Column buildUsernameField() {
+  Column builddisplayNameField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: EdgeInsets.only(top: 12.0),
           child: Text(
-            "Username",
+            "Display Name",
             style: TextStyle(
               color: Theme.of(context).accentColor,
               fontFamily: 'Texturina',
@@ -88,12 +88,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
         TextField(
-          controller: usernameController,
+          controller: displayNameController,
           decoration: InputDecoration(
-            errorText: isValidUsername
+            errorText: isValiddisplayName
                 ? null
-                : "Username must be between 4 to 12 char",
-            hintText: "Update your usernmae",
+                : "Display Name must be between 4 to 12 char",
+            hintText: "Update your display name",
           ),
         )
       ],
@@ -189,7 +189,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       padding: EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          buildUsernameField(),
+                          builddisplayNameField(),
                           buildBioField(),
                         ],
                       ),
